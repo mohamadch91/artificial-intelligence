@@ -145,6 +145,58 @@ class Game:
             children.append(grandchildren[i])
         return children
 
+    def game_over(self, children):
+        check = 0
+        x = []
+        average = self.heuristic_avg(children)
+        if average - self.average < 0.000001:
+            for i in range(len(children)):
+                if children[i][1][1] == True:
+                    print('YOU WIN WITH', children[i][1][0], 'SCORE :)')
+                    print(children[i][0])
+                    check = 1
+                    break
+            if check == 0:
+                print('YOU LOSE WITH', children[0][1][0], 'SCORE :(')
+                print(children[0][0])
+                check = 1
+            for i in range(len(self.avg_plot)):
+                x.append(int(i))
+            plt.plot(x, self.avg_plot)
+            plt.xlabel('generation')
+            plt.ylabel('heuristic ')
+            plt.plot(x, self.best, color='red')
+            plt.plot(x, self.worst, color='green')
+
+            plt.show()
+        self.average = average
+        if check == 0:
+            self.choose(children)
+
+ 
+
+    def mutation(self, grandchildren):
+        k = random.randint(0, len(grandchildren[0][0]))  # change how many cells
+        for j in range(len(grandchildren)):
+            for i in range(k):
+                yes_no = random.choices([0, 1], weights=(80, 20), k=1)  # yes or no
+                if yes_no == 1:
+                    change = random.randint(0, len(grandchildren[0][0]))
+                    grandchildren[j][0][change] = 0  # reset to zero
+        return grandchildren
+
+
+
+    def heuristic_avg(self, grandchildren):
+        sum_value = 0
+        for i in range(len(grandchildren)):
+            sum_value += grandchildren[i][1][0]
+        average = sum_value / len(grandchildren)
+        self.avg_plot.append(average)
+        self.best.append(grandchildren[0][1][0])
+        self.worst.append(grandchildren[99][1][0])
+        return average
+
 
 if __name__ == '__main__':
     num = 1
@@ -155,3 +207,8 @@ if __name__ == '__main__':
         print(content)
         h = Heuristic([content])
         h.load_next_level()
+        Chro = Chromosome(len(content))
+        game = Game(h, Chro)
+        population = game.score_all()
+        game.build_children(population, [])
+        num += 1
