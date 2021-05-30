@@ -1,13 +1,20 @@
 import random
 from matplotlib import pyplot as plt
 
+'''
+class for building chromosomes
+'''
+
+
 class Chromosome:
     def __init__(self, length):
         self.chromosome_cell = []
         self.chromosomes = []
         self.n = length
 
-
+    '''
+    build each chromosome randomly
+    '''
 
     def build_chromosome(self):
         self.chromosome_cell = []
@@ -19,6 +26,9 @@ class Chromosome:
             self.chromosome_cell.append(temp)
         return self.chromosome_cell
 
+    '''
+    build 200 chromosomes for population and save it
+    '''
 
     def build_all_chromosomes(self):
         for i in range(200):
@@ -27,6 +37,10 @@ class Chromosome:
         return self.chromosomes
 
 
+'''
+class for finding heuristic
+'''
+
 
 class Heuristic:
     def __init__(self, levels):
@@ -34,12 +48,18 @@ class Heuristic:
         self.current_level_index = -1
         self.current_level_len = 0
 
-
+    '''
+    load the next level of game
+    kind of unused:/
+    '''
 
     def load_next_level(self):
         self.current_level_index += 1
         self.current_level_len = len(self.levels[self.current_level_index])
 
+    '''
+    get score for each chromosome
+    '''
 
     def get_score(self, actions):
         current_level = self.levels[self.current_level_index]
@@ -74,6 +94,13 @@ class Heuristic:
         return max, win
 
 
+'''
+the main class:)
+class for handling all genetic algorithm
+first population, choose next generation, mutation, until it stops
+'''
+
+
 class Game:
     def __init__(self, heuristic, chromosome):
         self.heuristic = heuristic
@@ -83,6 +110,10 @@ class Game:
         self.avg_plot = []
         self.best = []
         self.worst = []
+
+    '''
+    calculate the score of all chromosomes of each generation
+    '''
 
     def score_all(self):
         population = []
@@ -94,6 +125,9 @@ class Game:
         population = self.sort(population)
         return population
 
+    '''
+    sort the population ascending
+    '''
 
     def sort(self, population):
         for i in range(len(population)):
@@ -104,7 +138,9 @@ class Game:
                     population[j + 1] = temp
         return population
 
-
+    '''
+    based on the heuristic(score) of each chromosome choose the top 100
+    '''
 
     def choose(self, children):
         grandchildren = []
@@ -117,12 +153,19 @@ class Game:
         self.game_over(children)
         return children
 
+    '''
+    build the children list with the top 100
+    '''
 
     def build_children(self, population, children):
         for i in range(int(len(population) / 2)):
             children.append(population[i])
         self.choose(children)
 
+    '''
+    mix the two parent and make the two children
+    it chooses randomly which parents create the children
+    '''
 
     def cross_over(self, children):
         random1 = random.randint(0, len(children) - 1)
@@ -135,6 +178,10 @@ class Game:
         chromosome2 = ''.join(chromosome2)
         return [chromosome1, h.get_score(chromosome1)], [chromosome2, h.get_score(chromosome2)]
 
+    '''
+    build th next generation
+    it has the grand parents too and choose the best between this generation and the past ones for better answers:)
+    '''
 
     def next_generation(self, children, grandchildren):
         for i in range(len(children)):
@@ -144,6 +191,12 @@ class Game:
         for i in range(int(len(grandchildren) / 2)):
             children.append(grandchildren[i])
         return children
+
+    '''
+    if the average of this generation and the previous generation is same
+    or it has reached converging the algorithm ends and we have the answer!
+    It then plots the heuristic average of generations for each level
+    '''
 
     def game_over(self, children):
         check = 0
@@ -173,7 +226,10 @@ class Game:
         if check == 0:
             self.choose(children)
 
- 
+    '''
+    chooses randomly with the probability of 0.2 to change some of cells of each children made
+    it reset randomly a cell to zero
+    '''
 
     def mutation(self, grandchildren):
         k = random.randint(0, len(grandchildren[0][0]))  # change how many cells
@@ -185,7 +241,9 @@ class Game:
                     grandchildren[j][0][change] = 0  # reset to zero
         return grandchildren
 
-
+    '''
+    calculate the average heuristic of each generation
+    '''
 
     def heuristic_avg(self, grandchildren):
         sum_value = 0
@@ -212,3 +270,4 @@ if __name__ == '__main__':
         population = game.score_all()
         game.build_children(population, [])
         num += 1
+
