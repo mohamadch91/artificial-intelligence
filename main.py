@@ -1,6 +1,33 @@
 import random
 from matplotlib import pyplot as plt
 
+class Chromosome:
+    def __init__(self, length):
+        self.chromosome_cell = []
+        self.chromosomes = []
+        self.n = length
+
+
+
+    def build_chromosome(self):
+        self.chromosome_cell = []
+        choice = [0, 2]
+        for i in range(self.n):
+            temp = random.randint(0, 2)
+            if i > 0 and self.chromosome_cell[i - 1] == 1 and temp == 1:
+                temp = random.choice(choice)
+            self.chromosome_cell.append(temp)
+        return self.chromosome_cell
+
+
+    def build_all_chromosomes(self):
+        for i in range(200):
+            each_chromosome = self.build_chromosome()
+            self.chromosomes.append(each_chromosome)
+        return self.chromosomes
+
+
+
 class Heuristic:
     def __init__(self, levels):
         self.levels = levels
