@@ -1,5 +1,82 @@
 import random
 from matplotlib import pyplot as plt
+def print_Chromosome(final_ans,map1):
+    lentgh=len(final_ans)
+    print(" map looks like: ")
+    BLACK = '\033[30m'
+    RED = '\033[41m'
+    GREEN = '\033[42m'
+    YELLOW = '\033[43m'
+    YELLOWF = '\033[43m'
+    BLUE = '\033[44m'
+    MAGENTA = '\033[45m'
+    CYAN = '\033[36m'
+    WHITE = '\033[47m'
+    UNDERLINE = '\033[4m'
+    RESET = '\033[0m'
+    bold = '\033[01m'
+    for i in map1:
+        if(i=="_"):
+            print(GREEN+"\U0001F334"+RESET ,end="")
+        elif(i=="G"):
+            print(RED+"\U0001F608"+RESET, end="")
+        else:
+            print(WHITE+"\U0001F344"+RESET, end="")
+    print("\ngame starts")
+    for k in range(lentgh):
+        if(final_ans[k]=='0'):
+            for i in range(lentgh):
+                if(i==k):
+                    print(CYAN+"\U0001F6B6"+RESET, end="")
+                else:
+                    if (map1[i] == "_"):
+                        print(GREEN+"\U0001F334"+RESET ,end="")
+                    elif (map1[i] == "G"):
+                        print(RED + "\U0001F608" + RESET, end="")
+                    else:
+                        print(WHITE + "\U0001F344" + RESET, end="")
+            print()
+            print()
+        elif(final_ans[k]=='1'):
+            for i in range(lentgh):
+                if (i == k):
+                    print(CYAN + "\U0001F6B6" + RESET, end="")
+                else:
+                    print(MAGENTA+"\U0001F51C"+RESET,end="")
+            print()
+            for i in range(lentgh):
+                    if (map1[i] == "_"):
+                        print(GREEN + "\U0001F334" + RESET, end="")
+                    elif (map1[i] == "G"):
+                        print(RED + "\U0001F608" + RESET, end="")
+                    else:
+                        print(WHITE+"\U0001F344"+RESET, end="")
+            print()
+            print()
+        else:
+            for i in range(lentgh):
+                if (map1[i] == "_"):
+                    print(GREEN+"\U0001F334"+RESET ,end="")
+                elif (map1[i] == "G"):
+                    print(RED+"\U0001F608"+RESET, end="")
+                else:
+                    print(WHITE + "\U0001F344" + RESET, end="")
+            print()
+            for i in range(lentgh):
+                if (i == k):
+                    print(CYAN+"\U0001F6B6"+RESET, end="")
+                else:
+                    print(MAGENTA + "\U0001F51C" + RESET, end="")
+            print()
+            print()
+
+
+
+
+
+
+
+
 
 '''
 class for building chromosomes
@@ -102,7 +179,8 @@ first population, choose next generation, mutation, until it stops
 
 
 class Game:
-    def __init__(self, heuristic, chromosome):
+    def __init__(self, heuristic, chromosome,content):
+        self.content=content
         self.heuristic = heuristic
         self.chromosome = chromosome
         self.chromosomes = chromosome.build_all_chromosomes()
@@ -207,11 +285,13 @@ class Game:
                 if children[i][1][1] == True:
                     print('YOU WIN WITH', children[i][1][0], 'SCORE :)')
                     print(children[i][0])
+                    print_Chromosome(children[i][0],content)
                     check = 1
                     break
             if check == 0:
                 print('YOU LOSE WITH', children[0][1][0], 'SCORE :(')
                 print(children[0][0])
+                print_Chromosome(children[i][0], content)
                 check = 1
             for i in range(len(self.avg_plot)):
                 x.append(int(i))
@@ -266,7 +346,7 @@ if __name__ == '__main__':
         h = Heuristic([content])
         h.load_next_level()
         Chro = Chromosome(len(content))
-        game = Game(h, Chro)
+        game = Game(h, Chro,content)
         population = game.score_all()
         game.build_children(population, [])
         num += 1
