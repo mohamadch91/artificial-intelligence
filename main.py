@@ -21,7 +21,6 @@ class Node:
         self.number = number
         self.x=x
         self.y=y
-        self.domain=[0,1]
 
 def read_input():
     row,column=[int(x) for x in input("plase insert row and column : ").split()]
@@ -54,12 +53,7 @@ def print_map(map,row,column):
                     print(colors.OK +style.GREEN+ "       " + colors.RESET+style.RESET, end="")
             print()
 
-def MRV(map,row,column):
-    print("hui")
-def forward(map,row,column):
-    print("hui")
-def MAC(map,row,column):
-    print("hui")
+
 if __name__ == '__main__':
     row,column,map=read_input()
     print_map(map,row,column)
