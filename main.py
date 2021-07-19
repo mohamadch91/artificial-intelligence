@@ -1,65 +1,1 @@
-class colors:
-    OK = '\033[92m' #GREEN
-    FAIL = '\033[91m' #RED
-    RESET = '\033[0m'  # RESET COLOR
-class style():
-    BLACK = '\033[30m'
-    RED = '\033[41m'
-    GREEN = '\033[42m'
-    YELLOW = '\033[43m'
-    YELLOWF = '\033[43m'
-    BLUE = '\033[44m'
-    MAGENTA = '\033[45m'
-    CYAN = '\033[36m'
-    WHITE = '\033[47m'
-    UNDERLINE = '\033[4m'
-    RESET = '\033[0m'
-    bold = '\033[01m'
-
-class Node:
-    def __init__(self, number, x,y):
-        self.number = number
-        self.x=x
-        self.y=y
-        self.domain=[0,1]
-
-def read_input():
-    row,column=[int(x) for x in input("plase insert row and column : ").split()]
-
-    map=[]
-    for i in range (row):
-        z=input().split()
-        inner_list=[]
-        for s in range(len(z)):
-            # we use -1 for - homes
-            if(z[s]=='-'):
-                node=Node(-1,i,s)
-            else:
-                node=Node(int(z[s]),i,s)
-            inner_list.append(node)
-        map.append(inner_list)
-
-    return row,column,map
-def print_map(map,row,column):
-    for z in range(row):
-        for p in range(column):
-            print(map[z][p].number,end="")
-        print()
-    for i in range(row):
-        for j in range(2):
-            for k in range (column):
-                if(map[i][k].number==0):
-                    print(colors.FAIL+style.RED+"       "+colors.RESET+style.RESET,end="")
-                elif (map[i][k].number==1 or map[i][k].number==-1):
-                    print(colors.OK +style.GREEN+ "       " + colors.RESET+style.RESET, end="")
-            print()
-
-def MRV(map,row,column):
-    print("hui")
-def forward(map,row,column):
-    print("hui")
-def MAC(map,row,column):
-    print("hui")
-if __name__ == '__main__':
-    row,column,map=read_input()
-    print_map(map,row,column)
+import mathimport reimport tkinter as tkimport string'''comment detector project ''''''common words in the sentences and useless words in project '''COMMEN_WORD = [" his ", " her ", " too ", " the ", " that ", " be ", " as ", " at ", " this "    , " is ", " are ", " by ", " to ", " was ", " were ", " and ", " so ", " of ", " it "," its ", " on ","but" , " just ",               " an "," a ","movie","story","watch" ]'''we declare common words for to don't detect this word in the sentences'''COMMEN = {"(", ")", "*", "." , ";",",","--","'","-"}'''refactor string and delate commen words in the sentences '''def string_refactor(LINE):    LINE = " " + LINE + " ";    for commen in COMMEN:        LINE = LINE.replace(commen, "")    for commen_word in COMMEN_WORD:        LINE = LINE.replace(commen_word, " ")    LINE = re.sub(' +', ' ', LINE)    LINE = LINE.strip()    return LINE'''refactor lines in negative and positive line'''def list_refactor(old_string):    new_lines = []    for LINE in  old_string :        LINE = string_refactor(LINE)        new_lines.append(LINE)    return new_lines'''count the one word in the line'''def counter(my_lines , word) :    sum = 0    for line in my_lines :        sum = line.count(word) + sum    return sum'''remove unneccesery word from my dictionary'''def uneccesery_remover(dicto : dict):    for word in dicto.keys() :        #remove lowe frequency words        if dicto[word] < 2 or len(word) < 2:            not_allow.append(word)'''delet words with high frquency use from dictionary'''def delete_highF(dictonary : dict) :    counter = 0    limit = 4    #remove high frequency words    sorted_dict =dict(sorted(dictonary.items(), key=lambda x: x[1] , reverse=True))    #search in dict and count them and delete    for word in sorted_dict.keys():        if counter > limit :            break        counter += 1        not_allow.append(word)    return dictonary'''get count of all words'''def get_M(dictonary : dict):    sum = 0    #search all dict and count    for i in dictonary.keys():        sum += dictonary[i]    return sum'''calculate possibility of two word in dictionary(biagram model possibility calculator)'''def creat2P(dictonary1 : dict , dictonary2 : dict , word1 , word2,m):    #concat two word    dual = word1 + " " + word2    #calculate first step    P = L1*teta    #calculate by formol and PI    if word1 in dictonary1 and dual  in dictonary2:        P *= L3 * dictonary2[dual] / dictonary1[word1]    #if first word count is zero    if word2  in dictonary1:        P *= L2 * dictonary1[word2] / m    return P'''calculate possibilty of one word in whole dictionary (unigram model)'''def creat1P(dictonary1 : dict  , word1,m ):    P = L1*teta    #calculate unigram propability    if word1  in dictonary1:        P *= L2 * dictonary1[word1] / m    return P'''count of two word in dict'''def find_bigram(my_lines : list,word_list : list):    dict = {}    #for all dict count the number of two word concat    for i in range(1, len(word_list)):        word1 = word_list[i - 1]        word2 = word_list[i]        my_str = word1 + " " + word2        if my_str not in dict.keys():            dict[my_str] = counter(my_lines, my_str)    return dict'''remove unnececery lines from dict'''def remove_uneccery_lines(my_lines : list,word_list : list):    new_lines = []    for str in my_lines:        str_rst = str.split()        new_str = ""        for word in str_rst:            if word  in word_list:                new_str += " "+word        new_lines.append(new_str)    return new_lines'''number of word in dict '''def words_number(dic , lines):    for line in lines :        word_by_word = line.split()        for word in word_by_word:            if word not in dic.keys():                dic[word] = counter(lines, word)'''remove not allowed words from dict'''def remove_notallow_word(dic:dict):    my_dic = {}    for word in dic.keys() :        if word not in not_allow:            my_dic[word] = dic[word]    return my_dic'''main get input and calculate and detect bad comments '''if __name__ == '__main__':    remove_items = []    #open negative file    with open('rt-polarity.neg') as n:        Nlines = n.readlines()    #open positive file    with open('rt-polarity.pos') as p:        Plines = p.readlines()    print("get lines  finished")    #crate dicts    Nupdated_lines = list_refactor(Nlines)    Pupdated_lines = list_refactor(Plines)    neg_dict = {}    pos_dict = {}    #number all words in dicts    print("updating lines  finished prt1")    words_number(neg_dict,Nupdated_lines)    words_number(pos_dict,Pupdated_lines)    print("updating dictionaries finished prt1")    not_allow = []    #remove unnecessary word from dict and high frequency used words    uneccesery_remover(neg_dict)    delete_highF(neg_dict)    uneccesery_remover(pos_dict)    delete_highF(pos_dict)    neg_dict = remove_notallow_word(neg_dict)    pos_dict = remove_notallow_word(pos_dict)    print("updating dictionaries finished prt2")    #counting the words    Mn = get_M(neg_dict)    Mp = get_M(pos_dict)    Nlist_word = list(neg_dict.keys())    Plist_word = list(pos_dict.keys())    Nupdated_lines = remove_uneccery_lines(Nupdated_lines,Nlist_word)    print("updating liens finished prt1")    Pupdated_lines = remove_uneccery_lines(Pupdated_lines,Plist_word)    print("updating liens finished prt2")    bigram_dict_neg = {}    bigram_dict_pos = {}    list_of_negword = []    list_of_posword = []    for i in Nupdated_lines:        j = i.split()        for k in j :            list_of_negword.append(k)    for i in Pupdated_lines:        j = i.split()        for k in j :            list_of_posword.append(k)    print("get all the words finished")    bigram_dict_neg = find_bigram(Nupdated_lines,list_of_negword)    print("calculate biagram finiehsd prt1")    bigram_dict_pos = find_bigram(Pupdated_lines,list_of_posword)    print("calculate biagram finiehsd prt2")    L3 = 0.75    L2 = 0.2    L1 = 0.05    teta = 0.15    #function for unigram button    def unigram_b():        global unigram_button        unigram_button = True    #function for biagram button    unigram_button = False    def biagram_b():        global biagram_button        biagram_button = True    biagram_button = False    #draw window to get input from user use tkinter    root = tk.Tk()    root.title("comment detector")    canvas1 = tk.Canvas(root, width=400, height=300, relief='raised')    canvas1.pack()    label1 = tk.Label(root, text='bad comment detector ')    label1.config(font=('helvetica', 14))    canvas1.create_window(200, 25, window=label1)    label2 = tk.Label(root, text='enter you sentences :')    label2.config(font=('helvetica', 10))    canvas1.create_window(200, 100, window=label2)    entry1 = tk.Entry(root)    canvas1.create_window(200, 140, window=entry1)    #fanction to sumbit button    def callback():        #buttons boolean        global buttonClicked        global unigram_button        global biagram_button        #get input from box        str = entry1.get()        #end of application        if str == "!q":            return        str = " " + str + " "        str = string_refactor(str)        str_split = str.split()        new_str = ""        for word in str.split():            if word not in not_allow:                new_str += " " + word        print(new_str)        new_str.strip()        str_list = list(new_str.split())        ehtemal_neg = 1        ehtemal_neg1 = 1        ehtemal_pos = 1        ehtemal_pos1 = 1        #calculate first word propability        if len(str_split) == 0:            label3 = tk.Label(root, text=' not e word', font=('helvetica', 10))            canvas1.create_window(200, 250, window=label3)            return        if str_split[0] in neg_dict:            ehtemal_neg = L2 * neg_dict[str_split[0]] / Mn + L1 * teta            ehtemal_neg1 = L2 * neg_dict[str_split[0]] / Mn + L1 * teta        if str_split[0] in pos_dict:            ehtemal_pos = L2 * pos_dict[str_split[0]] / Mp + L1 * teta            ehtemal_pos1 = L2 * pos_dict[str_split[0]] / Mp + L1 * teta        #calculate all models from functions        for i in range(1, len(str_list)):            word1 = str_list[i - 1]            word2 = str_list[i]            ehtemal_neg *= creat2P(neg_dict, bigram_dict_neg, word1, word2, Mn)            ehtemal_pos *= creat2P(pos_dict, bigram_dict_pos, word1, word2, Mp)            ehtemal_neg1 *= creat1P(neg_dict, word1, Mn)            ehtemal_pos1 *= creat1P(pos_dict, word1, Mp)        flag = 0        #detect client select witch model and sumbit        if (biagram_button):            biagram_button = False            if math.log(ehtemal_neg, 1.001) < math.log(ehtemal_pos, 1.001) or math.log(ehtemal_neg, 1.001) == math.log(                    ehtemal_pos, 1.001):                label4 = tk.Label(root, text="not filter", font=('helvetica', 10, 'bold'))                canvas1.create_window(50, 270, window=label4)            else:                label4 = tk.Label(root, text="filter", font=('helvetica', 10, 'bold'))                canvas1.create_window(150, 270, window=label4)        if (unigram_button):            unigram_button = False            print(math.log(ehtemal_neg1, 1.001))            print(math.log(ehtemal_pos1, 1.001))            if math.log(ehtemal_neg1, 1.001) < math.log(ehtemal_pos1, 1.001) or math.log(ehtemal_neg1,                                                                                         1.001) == math.log(                    ehtemal_pos1, 1.001):                label4 = tk.Label(root, text="not filter", font=('helvetica', 10, 'bold'))                canvas1.create_window(250, 270, window=label4)            else:                label4 = tk.Label(root, text="filter", font=('helvetica', 10, 'bold'))                canvas1.create_window(330, 270, window=label4)    #add buttons to canvas    button1 = tk.Button(text='sumbit', command=callback, bg='brown', fg='white',                        font=('helvetica', 9, 'bold'))    button2 = tk.Button(text='unigram', command=unigram_b, bg='blue', fg='white',                        font=('helvetica', 9, 'bold'))    button3 = tk.Button(text='bigram', command=biagram_b, bg='blue', fg='white',                        font=('helvetica', 9, 'bold'))    canvas1.create_window(200, 180, window=button1)    canvas1.create_window(150, 220, window=button2)    canvas1.create_window(250, 220, window=button3)    canvas1.pack()    root.mainloop()    #show window
